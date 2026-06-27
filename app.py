@@ -10,7 +10,7 @@ def get_db_connection():
         conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='F24-1009',  # Adjust based on your local MySQL root configurations
+            password="YOUR_MYSQL_PASSWORD",  # Adjust based on your local MySQL root configurations
             database='airline_db'
         )
         return conn
