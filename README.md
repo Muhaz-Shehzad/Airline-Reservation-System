@@ -63,7 +63,7 @@ Bachelor's Student
 Airline-Reservation-System/
 │
 ├── app.py
-├── database.py
+├── SQL Database.py
 ├── models.py
 ├── airline_db.sql
 ├── README.md
@@ -119,7 +119,7 @@ pip install -r requirements.txt
 
 ### 4. Configure MySQL
 
-* Import `airline_db.sql`
+* Import `SQL_Database.sql`
 * Update database username, password, and database name in your project files.
 
 ### 5. Run the Project
