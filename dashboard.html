@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="w-full max-w-5xl mx-auto space-y-8 animate-fade-in">
+
+    <div class="bg-gradient-to-r {% if session.get('role') == 'admin' %}from-amber-600 via-slate-800 to-slate-900{% else %}from-blue-700 via-blue-800 to-slate-900{% endif %} text-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full filter blur-3xl opacity-20 -mr-5 -mt-5"></div>
+        
+        <div class="relative z-10">
+            <span class="text-xs font-bold uppercase tracking-widest {% if session.get('role') == 'admin' %}text-amber-300 bg-amber-950/40{% else %}text-blue-300 bg-blue-900/40{% endif %} px-3 py-1 rounded-full">
+                {% if session.get('role') == 'admin' %}System Audit Vault{% else %}Passenger Center{% endif %}
+            </span>
+            <h2 class="text-3xl font-black tracking-tight mt-2">Welcome Back, {{ session['name'] }}</h2>
+            <p class="text-sm text-slate-300 mt-1">
+                {% if session.get('role') == 'admin' %}Reviewing master reservation records and real-time aircraft seat allocations.{% else %}Access your flight documents, active boarding passes, and booking history portfolios.{% endif %}
+            </p>
+        </div>
+        
+        <div class="relative z-10 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/10 min-w-[160px]">
+            <div class="text-xs text-slate-300 font-semibold uppercase tracking-wider">
+                {% if session.get('role') == 'admin' %}Global Manifest{% else %}Total Bookings{% endif %}
+            </div>
+            <div class="text-3xl font-black text-white mt-0.5">{{ bookings|length }} Rows</div>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+            <span class="text-lg">🎫</span>
+            <h3 class="text-lg font-bold text-slate-800 tracking-tight">
+                {% if session.get('role') == 'admin' %}Master Passenger Manifest Log{% else %}Your Active Booking Portfolio{% endif %}
+            </h3>
+        </div>
+
+        {% if bookings %}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800 text-white font-bold text-xs uppercase tracking-wider">
+                            <th class="px-6 py-4">Booking ID</th>
+                            {% if session.get('role') == 'admin' %}
+                                <th class="px-6 py-4">Passenger</th>
+                            {% endif %}
+                            <th class="px-6 py-4">Flight No</th>
+                            <th class="px-6 py-4">Route Journey Map</th>
+                            <th class="px-6 py-4">Flight Date</th>
+                            <th class="px-6 py-4 text-center">Assigned Seat</th>
+                            <th class="px-6 py-4 text-right">Fare Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-600">
+                        {% for booking in bookings %}
+                        <tr class="hover:bg-slate-50/60 transition-colors">
+                            <td class="px-6 py-4 font-mono font-bold text-blue-600">#BK-00{{ booking.booking_id }}</td>
+                            
+                            {% if session.get('role') == 'admin' %}
+                                <td class="px-6 py-4 font-semibold text-slate-800">{{ booking.passenger_name }}</td>
+                            {% endif %}
+                            
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                    ✈ {{ booking.flight_number }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 font-medium text-slate-700">
+                                {{ booking.departure_airport }} <span class="text-slate-300 mx-1">➔</span> {{ booking.arrival_airport }}
+                            </td>
+                            <td class="px-6 py-4 text-slate-500 font-medium">🗓 {{ booking.flight_date }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-block font-mono font-bold text-xs bg-slate-900 text-amber-400 px-3 py-1 rounded-lg border border-slate-800">
+                                    {{ booking.seat_number }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right font-bold text-slate-900">Rs. {{ "{:,.2f}".format(booking.price) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-white text-center py-16 px-6 rounded-2xl shadow-sm border border-dashed border-slate-200">
+            <div class="text-4xl mb-3">🎫</div>
+            <h4 class="text-base font-bold text-slate-800">No Manifest Log Found</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">No ticket rows exist within this database configuration view.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

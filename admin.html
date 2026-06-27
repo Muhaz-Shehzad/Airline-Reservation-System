@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="w-full space-y-8 animate-fade-in">
+
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Administrative Cockpit</h2>
+            <p class="text-sm text-slate-500 mt-1">Manage global flight operators, deploy fleet assets, and configure scheduled pricing runs.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> DB Connection Live
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Active Routes</span>
+                <h3 class="text-3xl font-black text-slate-800 mt-1">{{ flights|length }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl font-bold">🗺</div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Published Runs</span>
+                <h3 class="text-3xl font-black text-slate-800 mt-1">{{ schedules|length }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-xl font-bold">📆</div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Fleet Airframes</span>
+                <h3 class="text-3xl font-black text-slate-800 mt-1">2 Available</h3>
+            </div>
+            <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-xl font-bold">🚀</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <div class="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100">
+                <span class="text-lg">⚙</span>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Deploy Fleet Schedule</h3>
+            </div>
+            
+            <form action="/admin" method="POST" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Flight Path Route</label>
+                    <select name="flight_number" class="w-full border border-slate-200 p-2.5 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition text-slate-700">
+                        {% for f in flights %}
+                            <option value="{{ f.flight_number }}">{{ f.flight_number }} ({{ f.departure_airport }} ➔ {{ f.arrival_airport }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Assign Fleet Airframe</label>
+                    <select name="aircraft_id" class="w-full border border-slate-200 p-2.5 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition text-slate-700">
+                        <option value="1">Boeing 737 (180 Seats)</option>
+                        <option value="2">Airbus A320 (150 Seats)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Operation Flight Date</label>
+                    <input type="date" name="flight_date" required 
+                           class="w-full border border-slate-200 p-2.5 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition text-slate-700">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Base Ticket Fare Price (PKR)</label>
+                    <div class="relative rounded-xl shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-slate-400 text-xs font-medium">PKR</span>
+                        </div>
+                        <input type="number" step="0.01" name="price" required placeholder="0.00"
+                               class="w-full border border-slate-200 pl-12 pr-3 py-2.5 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition text-slate-800">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold py-3 rounded-xl shadow-md transition transform active:scale-[0.99] text-sm mt-2">
+                    Publish Active Run
+                </button>
+            </form>
+        </div>
+
+        <div class="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">📋</span>
+                    <h3 class="text-base font-bold text-slate-800 tracking-tight">Active Operation Schedules</h3>
+                </div>
+                <span class="text-xs font-medium text-slate-400">Total Rows: {{ schedules|length }}</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-100/70 text-slate-500 font-bold border-b border-slate-100 text-xs uppercase tracking-wider">
+                            <th class="px-6 py-3.5">Schedule ID</th>
+                            <th class="px-6 py-3.5">Flight Number</th>
+                            <th class="px-6 py-3.5">Operation Date</th>
+                            <th class="px-6 py-3.5 text-right">Base Fare Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-600">
+                        {% if schedules %}
+                            {% for s in schedules %}
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-6 py-4 font-mono font-medium text-slate-400">SID-0{{ s.schedule_id }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                        {{ s.flight_number }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-medium text-slate-700">{{ s.flight_date }}</td>
+                                <td class="px-6 py-4 text-right font-semibold text-slate-900">
+                                    Rs. {{ "{:,.2f}".format(s.price) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="px-6 py-10 text-center text-slate-400 font-medium bg-slate-50/20">
+                                    No operations have been published to the system ledger yet. Use the deployment panel to create rows.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

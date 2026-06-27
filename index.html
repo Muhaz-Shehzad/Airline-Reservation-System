@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="w-full my-4">
+    {% if not session.get('user_id') %}
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-12 max-w-5xl mx-auto min-h-[550px]">
+        
+        <div class="md:col-span-5 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-950 p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-blue-600 rounded-full filter blur-3xl opacity-30 -mr-10 -mt-10"></div>
+            
+            <div class="relative z-10">
+                <span class="text-xs font-bold tracking-widest uppercase bg-blue-500/30 px-3 py-1 rounded-full text-blue-200">Passenger Portal</span>
+                <h1 class="text-4xl font-black tracking-tight mt-6 leading-tight">Fly Smarter,<br>Link Faster.</h1>
+                <p class="text-sm text-blue-200/80 mt-4 leading-relaxed font-light">
+                    Welcome to the official SkyLink Express reservation desk. Manage schedules, customize seats, and access real-time flight records seamlessly.
+                </p>
+            </div>
+            
+            <div class="relative z-10 border-t border-blue-500/30 pt-6 mt-8">
+                <div class="text-xs text-blue-300 font-medium">Academic Project Integration</div>
+                <div class="text-lg font-bold tracking-wide mt-1 text-white">✈ SkyLink Express</div>
+            </div>
+        </div>
+
+        <div class="md:col-span-7 p-10 flex flex-col justify-center bg-slate-50/50">
+            <div class="max-w-md w-full mx-auto">
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Sign In to Account</h2>
+                <p class="text-sm text-slate-500 mt-1 mb-8">Enter your credentials below to access flight booking management.</p>
+                
+                <form action="/login" method="POST" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Email Address</label>
+                        <input type="email" name="email" required placeholder="name@example.com" 
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm text-slate-800">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Password</label>
+                        <div class="relative rounded-xl shadow-sm">
+                            <input type="password" id="passwordInput" name="password" required placeholder="••••••••" 
+                                   class="w-full px-4 py-3 pr-12 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm text-slate-800">
+                            
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 transition focus:outline-none">
+                                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition transform active:scale-[0.99] mt-2">
+                        Sign In Safely
+                    </button>
+                </form>
+
+                <div class="mt-8 p-4 bg-blue-50/60 rounded-xl border border-blue-100 flex items-start gap-3">
+                    <span class="text-xl mt-0.5">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-blue-900 uppercase tracking-wide">Testing Framework Accounts</h4>
+                        <p class="text-xs text-blue-700/90 mt-1">
+                            <strong>User:</strong> user@gmail.com <span class="mx-1">|</span> <strong>Admin:</strong> admin@airline.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-3xl mx-auto border border-slate-100">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-blue-50 rounded-xl text-blue-600 text-xl font-bold">✈</div>
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Search Available Flights</h2>
+                <p class="text-sm text-slate-500">Plan and coordinate your next journey with SkyLink Express</p>
+            </div>
+        </div>
+        
+        <form action="/search" method="GET" class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Departure City</label>
+                    <input type="text" name="departure" required placeholder="e.g. Karachi" 
+                           class="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Arrival City</label>
+                    <input type="text" name="arrival" required placeholder="e.g. Islamabad" 
+                           class="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Departure Travel Date</label>
+                <input type="date" name="date" required 
+                       class="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition text-slate-700">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/10 transition transform active:scale-[0.99]">
+                Find Available Routes
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M21.008 12c-1.293 4.338-5.311 7.5-10.008 7.5a10.47 10.47 0 0 1-2.863-.395M19.5 19.5l-15-15M9 9l6 6" />
+        `;
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        `;
+    }
+}
+</script>
+{% endblock %}
